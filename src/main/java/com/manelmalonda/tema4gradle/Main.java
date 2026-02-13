@@ -2,6 +2,7 @@ package com.manelmalonda.tema4gradle;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 
@@ -11,35 +12,43 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
+        // PUNTO 8: DEBATE ENTRE DOS IAs
+
         OpenAiChatModel model = OpenAiChatModel.builder()
                 .baseUrl("http://localhost:11434/v1")
                 .apiKey("ignore")
                 .modelName("gemma:2b")
                 .build();
 
-        //PUNTO 7: GESTIÓN DE LA MEMORIA
+
+        String tema = "La tortilla de patata, ¿con cebolla o sin cebolla?";
+        System.out.println("=== COMIENZO DEL DEBATE: " + tema + " ===");
 
         List<ChatMessage> historial = new ArrayList<>();
 
-        String mensaje1 = "Hola, soy Manel.";
-        System.out.println("Tú: " + mensaje1);
+        historial.add(new SystemMessage("Eres un experto debatiente. Tus respuestas deben ser breves, intensas y directas."));
 
-        historial.add(new UserMessage(mensaje1));
+        String mensajeInicial = "¿Qué opinas sobre " + tema + "?";
+        historial.add(new UserMessage(mensajeInicial));
+        System.out.println("Moderador: " + mensajeInicial);
 
-        AiMessage respuesta1 = model.chat(historial).aiMessage();
-        historial.add(respuesta1);
+        for (int i = 1; i <= 5; i++) {
+            System.out.println("\n--- Turno " + i + " ---");
 
-        System.out.println("IA: " + respuesta1.text());
+            AiMessage respuestaIA = model.chat(historial).aiMessage();
 
-        String mensaje2 = "¿Recuerdas cómo me llamo?";
-        System.out.println("\nTú: " + mensaje2);
-
-        historial.add(new UserMessage(mensaje2));
+            System.out.println("IA Debatiente: " + respuestaIA.text());
 
 
-        AiMessage respuesta2 = model.chat(historial).aiMessage();
-        historial.add(respuesta2);
+            historial.add(respuestaIA);
 
-        System.out.println("IA: " + respuesta2.text());
+            historial.add(new UserMessage(respuestaIA.text()));
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
     }
 }
