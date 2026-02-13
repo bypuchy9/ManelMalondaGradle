@@ -1,17 +1,24 @@
 package com.manelmalonda.tema4gradle;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    static void main() {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(String.format("Hello and welcome!"));
+import dev.langchain4j.model.openai.OpenAiChatModel;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            IO.println("i = " + i);
-        }
+public class Main {
+    public static void main(String[] args) {
+
+        // PUNTO 6: Configuración del modelo y prueba simple
+        var model = OpenAiChatModel.builder()
+                .baseUrl("http://localhost:11434/v1")
+                .apiKey("ignore")
+                .modelName("gemma:2b")
+                .build();
+
+
+        System.out.println("Enviando mensaje a la IA...");
+        String respuesta = model.chat("Hola, cuéntame un chiste muy breve.");
+
+
+
+        System.out.println("Respuesta de la IA:");
+        System.out.println(respuesta);
     }
 }
